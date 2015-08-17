@@ -6,21 +6,21 @@ EMBO Practical Course - Computational analysis of protein-protein interactions: 
 
 DAY 1 - 28 SEPTEMBER 2015
 -------------------------
-*8:15: Coach departs hotel to TGAC
-*08:30-09:00: Registration and Coffee
-*09:00-09:15: Welcome and introductions
-*09:15-10:00: 1 to 1 introductions round
-*10:00-10:30: Introduction to bioinformatics, protein modules and sequence alignments, practical and presentation
-*10:30-11:00: Coffee Break
-*11:00-12:30: Continued: Introduction to bioinformatics, protein modules and sequence alignments, practical and presentation
-*12:30-13:30: Lunch
-*13:30-15:00: Chimera protein structure
-*15:00-15:30: Coffee Break
-*15:30-17:00: Continued: Chimera protein structure
-*17:00-17:30: Coffee Break
-*17:30-19:00: Trainee data practical session: working with your own data
-*19:00: Coach departs TGAC to hotel
-*19:30: Dinner
+* 8:15: Coach departs hotel to TGAC
+* 08:30-09:00: Registration and Coffee
+* 09:00-09:15: Welcome and introductions
+* 09:15-10:00: 1 to 1 introductions round
+* 10:00-10:30: Introduction to bioinformatics, protein modules and sequence alignments, practical and presentation
+* 10:30-11:00: Coffee Break
+* 11:00-12:30: Continued: Introduction to bioinformatics, protein modules and sequence alignments, practical and presentation
+* 12:30-13:30: Lunch
+* 13:30-15:00: Chimera protein structure
+* 15:00-15:30: Coffee Break
+* 15:30-17:00: Continued: Chimera protein structure
+* 17:00-17:30: Coffee Break
+* 17:30-19:00: Trainee data practical session: working with your own data
+* 19:00: Coach departs TGAC to hotel
+* 19:30: Dinner
 
 DAY 2 - 29 SEPTEMBER 2015
 -------------------------
