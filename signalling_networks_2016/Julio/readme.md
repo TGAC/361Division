@@ -1,1 +1,1 @@
-Julio's - Signalling Networks: from data to modelling, taking place at TGAC, Norwich, UK, 25-29 January 2016
+Julio's - Signalling Networks: from data to modelling @ TGAC, Norwich, UK, 25-29 January 2016
