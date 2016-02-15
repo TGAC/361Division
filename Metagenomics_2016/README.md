@@ -1,2 +1,3 @@
-# Course Materials 
-Signalling Networks: from data to modelling, taking place at TGAC, Norwich, UK, 25-29 January 2016
+# Training Materials 
+
+Software Carpentry Workshop - 8 to 9 March 2016 @ TGAC, Norwich, UK
