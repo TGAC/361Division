@@ -1,2 +1,3 @@
-# training materials 
-Software Carpentry Workshop - 8 to 9 Marhc 2016 @ TGAC, Norwich, UK
+# Training Materials 
+
+Software Carpentry Workshop - 8 to 9 March 2016 @ TGAC, Norwich, UK
