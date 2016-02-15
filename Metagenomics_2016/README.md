@@ -1,3 +1,3 @@
 # Training Materials 
 
-Software Carpentry Workshop - 8 to 9 March 2016 @ TGAC, Norwich, UK
+Metagenomics: from bench to data analysis - 19 to 23 September 2016 @ TGAC, Norwich, UK
