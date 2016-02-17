@@ -1,3 +1,3 @@
 # Training Materials 
 
-Metagenomics: from bench to data analysis - 19 to 23 September 2016 @ TGAC, Norwich, UK
+Population Variation Genetics - 23 to 28 May 2016 @ TGAC, Norwich, UK
