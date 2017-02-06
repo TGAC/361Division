@@ -1,0 +1,196 @@
+	rm(list=ls(all=TRUE))
+
+	library(caret)
+
+	library(ggplot2)
+
+	library(reshape2)
+
+	library(randomForest)
+
+	library(varSelRF)
+
+############################################################################
+# Input Data
+############################################################################
+
+       set.seed(1234)
+      
+	data<-read.table("data.txt", header=T,sep="\t",row.names=1)
+      
+   	X<-data[,3:ncol(data)]   # predictor Set 
+
+        x<-scale(X)       
+
+	y<-as.factor(data[,1]) # Response vector
+
+	dim(x)
+
+	length(y)
+
+##################################################
+
+#### Random forest application 
+
+##################################################
+	
+        rfRes<-randomForest(x=x,y=y,importance=T)
+
+        rfRes
+
+        varImpPlot(rfRes)
+
+ 	imp<-rfRes$importance
+
+        OOB<-rfRes$err.rate*100 
+
+        confusionMatrix<-rfRes$confusion
+
+# Save all the output files
+
+	write.csv(imp,"Imp_Data.csv")
+
+        write.csv(confusionMatrix,"confusionMatrix_Data.csv")
+
+         write.csv(OOB[500,1],"OOB_error.csv")
+
+
+################### variable selection ##############################################
+
+	rf.vs1 <- varSelRF(x, as.factor(y), ntree = 500, ntreeIterat = 300,vars.drop.frac = 0.2)
+
+	rf.vs1
+
+	selected<-rf.vs1$selected.vars
+
+        Class<-data[,1]
+
+        newDat<-cbind(Class,data[,selected])
+        
+        plot(newDat)
+
+############################# Some vizualization with selected data #################
+
+	df.m <- melt(newDat, id.var = "Class")
+
+	p <- ggplot(data = df.m, aes(x=variable, y=value)) + geom_boxplot(aes(fill=Class))
+
+	p1<-p + facet_wrap( ~ variable, scales="free")
+
+        ggsave(p1, file="boxPlot with selected.pdf")
+
+# Save output results
+
+	write.csv(selected,"selected.csv")
+
+	write.csv(data[,selected],"selected_with_data_1_2.csv")
+
+	write.csv(newDat,"selected_with_y.csv")
+
+
+###############################################
+
+## Itarate the model with selected variables 
+
+###############################################
+
+
+        rfRes1<-randomForest(x=data[,selected],y=y,importance=T)
+
+        rfRes1 
+
+        varImpPlot(rfRes1)
+
+ 	imp1<-rfRes1$importance
+
+        OOB1<-rfRes1$err.rate*100 
+
+        write.csv(imp1,"Imp_Data_after_Selection.csv")
+
+        write.csv(confusionMatrix,"confusionMatrix_Data_after_Selection.csv")
+
+        write.csv(OOB1[500,1],"OOB_error_after_Selection.csv")
+
+
+###############################################################################################
+## 
+##  Permutation test for metabolomics data
+##
+################################################################################################ 
+
+	totiter<-1000
+
+	err<-matrix(data=NA,nrow=dim(X)[2],ncol=totiter)
+	RF_Imp<-matrix(data=NA,nrow=dim(X)[2],ncol=totiter)
+#	selected<-matrix(data=NA,nrow=dim(X)[2],ncol=totiter)
+	y2<-matrix(data=NA,nrow=dim(X)[1],ncol=totiter)
+	RF_Imp1<-matrix(data=NA,nrow=dim(X)[2],ncol=totiter)
+	RF_Imp2<-matrix(data=NA,nrow=dim(X)[2],ncol=totiter)
+
+	for(l in 1:totiter)
+	{
+
+	index<-l
+
+	print(l)
+
+	y1<-sample(y)
+
+	y2[,index]<-y1
+
+	mydata<-cbind(y1,X)
+
+	dim(mydata)
+
+	rfres<-randomForest(y=y1,x=X,data=mydata,importance=T,na.action=na.omit)
+
+        #RF_OP<-rfres$predicted
+
+ 	err[,index]<-rfres$err.rate[500,1][1]
+
+ 	imp<-rfres$importance
+ 	RF_Imp1[,index]<-imp[,1]
+ 	RF_Imp2[,index]<-imp[,2]
+
+
+	classError<-as.vector(t(err[1,]*100))
+
+} 
+	
+	plot(classError, pch=19)
+
+	
+# Store the .csv files
+
+	write.csv(classError,"ClassError_perm.csv")
+
+	write.csv(RF_Imp1,"RF_imp_1_perm.csv")
+
+	write.csv(RF_Imp1,"RF_imp_2_perm.csv")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
