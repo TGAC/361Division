@@ -1,0 +1,24 @@
+
+VCFtools - v0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf SNPs_defaults.vcf
+	--out SNPs_defaults
+	--plink
+
+After filtering, kept 10 out of 10 Individuals
+Writing PLINK PED and MAP files ... 
+
+Unrecognized values used for CHROM: U35_28 - Replacing with 0.
+
+Unrecognized values used for CHROM: U35_65 - Replacing with 0.
+
+Unrecognized values used for CHROM: U35_122 - Replacing with 0.
+
+Unrecognized values used for CHROM: U35_266 - Replacing with 0.
+
+Unrecognized values used for CHROM: U35_364 - Replacing with 0.
+Done.
+After filtering, kept 33 out of a possible 33 Sites
+Run Time = 0.00 seconds

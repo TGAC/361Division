@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "# Load the R packages: gdsfmt and SNPRelate\nlibrary(gdsfmt)\nlibrary(SNPRelate)\n\n#The SNPRelate package provides a function snpgdsVCF2GDS() to reformat a VCF file.\n# Load the example VCF that came with the package, and save it as the variable example\nexample <- system.file(\"extdata\", \"sequence.vcf\", package=\"SNPRelate\")\n#Transform the VCF to the SNPrelate format GDS, check the function first\n?snpgdsVCF2GDS \n#\"\"Reformat Variant Call Format (VCF) file(s)\"\"\nsnpgdsVCF2GDS(example, \"test.gds\", method=\"biallelic.only\")\n# Open the GDS file and store it in a variable named \"mydata\"\nmydata <- snpgdsOpen(filename = \"test.gds\")\nmydata\n\n#Lest try something a more complex dataset complex:\ngenofile <- snpgdsOpen(snpgdsExampleFileName())\n#LD-based SNP pruning: filter SNPs in close LD to avoid the strong influence of SNP clusters\n?snpgdsLDpruning\nsnpset <- snpgdsLDpruning(genofile, ld.threshold=0.3)\n#Copy the name of the remaining SNPs to a new variable\nsnpset.onlyids<- unlist(snpset)\n#Calculate a PCA\nmypca <- snpgdsPCA(genofile, snp.id=snpset.onlyids)\n#Plot it\nplot(mypca)\n#IMPORTANT: mypca is a variable that contains several tables with information, eg.\n#Check the samples inside the object mypca\nmypca$sample.id\n#Check the SNPs into mypca\nmypca$snp.id\n\n\n#Install library using the INSTALL button or the command\ninstall.packages(\"pca3d\")\nlibrary(\"pca3d\") #Load it!\n\n#IMPORTANT: \n#the data-structure \"mypca\" contains several elements\n#the samples (=dots) coordinates are into, in the table \"eigenvect\"\n\n#Plot a PCA 3D\npca3d(mypca$eigenvect)\n#Animate it!\npca3d(mypca$eigenvect); makeMoviePCA();\n\n\n\n\n\n\n          \n          \n",
+    "created" : 1487433763657.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "614260568",
+    "id" : "74963347",
+    "lastKnownWriteTime" : 1487436856,
+    "last_content_update" : 1487436856506,
+    "path" : "~/Documents/training/BFB_Feb17/devega_SNPrelate/new_project_snprelate/Untitled.R",
+    "project_path" : "Untitled.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

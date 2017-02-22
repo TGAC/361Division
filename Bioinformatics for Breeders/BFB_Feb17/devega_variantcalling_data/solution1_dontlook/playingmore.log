@@ -1,0 +1,15 @@
+
+VCFtools - v0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf [stdin]
+	--out playingmore
+	--recode
+	--remove-filtered-all
+	--remove-indels
+
+After filtering, kept 10 out of 10 Individuals
+Outputting VCF file...
+After filtering, kept 27 out of a possible 33 Sites
+Run Time = 1.00 seconds

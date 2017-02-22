@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1487435721357.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "387F98C7",
+    "lastKnownWriteTime" : 7665811726724392287,
+    "last_content_update" : 1487435721357,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "15D5C6C7",
+        "caption" : "mypca$eigenvect",
+        "contentUrl" : "grid_resource/gridviewer.html?env=_rs_no_env&obj=&cache_key=15D5C6C7",
+        "displayedObservations" : 279,
+        "environment" : "_rs_no_env",
+        "object" : "",
+        "preview" : 0,
+        "totalObservations" : 279,
+        "variables" : 32
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
