@@ -1,0 +1,170 @@
+library(qtl)
+WSC <- read.cross("csv", dir="C://Users/cgj/My documents", "WSC2.csv", estimate.map=FALSE)
+summary(WSC)
+#Omit individuals and markers with lots of missing data.
+plotMissing(WSC) # show individuals with missing data (horizontal line), and markers with missing data (vertical lines).
+par(mfrow=c(1,2), las=1)
+plot(ntyped(WSC), ylab="No. typed markers", main="No. genotypes per individual") #individuals with missing genotypes (markers).
+plot(ntyped(WSC, "mar"), ylab="No. typed individuals", main="No. genotypes by marker") #markers that are missing genotypes (individuals).
+par(mfrow=c(1,1), las=1)
+WSC <- subset(WSC, ind=(ntyped(WSC) >50))
+#to omit markers with missing data, need to identify the names of the markers.
+nt.bymar <- ntyped(WSC, "mar")
+todrop <- names(nt.bymar[nt.bymar <100])
+WSC <- drop.markers(WSC, todrop)
+#idnetify duplicate individuals
+cg <- comparegeno(WSC)
+hist(cg[lower.tri(cg)], breaks=seq(0, 1, len=101), xlab="No. matching genotypes")
+rug(cg[lower.tri(cg)])
+print(dup <- findDupMarkers(WSC, exact.only=FALSE))
+#there are no duplicate individuals in this dataset. to remove individuals see http://www.rqtl.org/tutorials/geneticmaps.pdf pg6.
+#Segregation distortion. A 1:2:1 frequency is expected in an F2 cross. Large departures from this frequency can indicate problematic markers, which need to be removed.
+gt <- geno.table(WSC)
+gt[gt$P.value < 0.05/totmar(WSC),]
+todrop <- rownames(gt[gt$P.value < 1e-10,])
+WSC <- drop.markers(WSC, todrop)
+#individual genotype frequencies. Individuals should aslo segregate in a 1:2:1 frequency. The following code can help to identify individuals with high genotyping errors.
+g <- pull.geno(WSC)
+gfreq <- apply(g, 1, function(a) table(factor(a, levels=1:5)))
+gfreq <- t(t(gfreq) / colSums(gfreq))
+par(mfrow=c(1,5), las=1)
+for(i in 1:5)
+       plot(gfreq[i,], ylab="Genotype frequency", main=c("AA", "AB", "BB", "not.BB", "not.AA")[i],
+                           ylim=c(0,1))
+#Pairwise marker linkages. 
+#If segregation distortion is rampant in a dataset (and such things do happen), the usual tests of pairwise linkage will give distorted results, and so it is best to instead use a simple
+#chi-square or likelihood ratio test, to assess the association between markers. The function markerlrt() behaves just like est.rf(), but uses a general likelihood ratio test in place of
+#the usual test of pairwise linkage. however, this dataset is not too badly distorted
+WSC <- est.rf(WSC)
+#check if alleles have the wrong coding i.e. the alleles have been scored incorrectly  (A ↔ B).
+checkAlleles(WSC, threshold=5)
+#a plot of the LOD score against the recombination fractions for all marker pairs will indicate any issues.
+rf <- pull.rf(WSC)
+lod <- pull.rf(WSC, what="lod")
+par(mfrow=c(1,1), las=1)
+plot(as.numeric(rf), as.numeric(lod), xlab="Recombination fraction", ylab="LOD score")
+#Form the linkage groups.
+lg <- formLinkageGroups(WSC, max.rf=0.35, min.lod=6)
+table(lg[,2])
+lg <- formLinkageGroups(WSC, max.rf=0.35, min.lod=5) #try differnt max.rf, and min.lod scores
+table(lg[,2])
+WSC <- formLinkageGroups(WSC, max.rf=0.35, min.lod=5, reorgMarkers=TRUE)
+plotRF(WSC, alternate.chrid = TRUE)
+#if there are issues with the plot, and linkage groups show associations with each other, then re-ordering the markers can be performed. See http://www.rqtl.org/tutorials/geneticmaps.pdf pg13-16.
+#once satisfied that the correct number of linkage groups has been found, move onto ripple function, an dordering the markers in the linkage groups.
+WSC <- orderMarkers(WSC, chr=7) #start with the chr with the least amount of markers
+pull.map(WSC, chr=7)
+rip7 <- ripple(WSC, chr=7, window=7)
+summary(rip7)
+rip7lik <- ripple(WSC, chr=7, window=4, method="likelihood", error.prob=0.005)
+summary(rip7lik)
+compareorder(WSC, chr=7, c(1:4, 6,5, 7:10), error.prob=0.01)
+compareorder(WSC, chr=7, c(1:4, 6,5, 7:10), error.prob=0.001)
+compareorder(WSC, chr=7, c(1:4, 6,5, 7:10), error.prob=0)
+WSC <- switch.order(WSC, chr=7, c(1:4, 6,5, 7:10), error.prob=0.005)
+pull.map(WSC, chr=7)
+WSC <- orderMarkers(WSC, chr=6)
+pull.map(WSC, chr=6)
+rip6 <- ripple(WSC, chr=6, window=7)
+summary(rip6)
+rip6lik <-ripple(WSC, chr=6, window=4, method="likelihood", error.prob=0.005)
+summary(rip6lik)
+WSC <-orderMarkers(WSC, chr=5)
+pull.map(WSC, chr=5)
+rip5 <- ripple(WSC, chr=5, window=7)
+summary(rip5)
+rip5lik <- ripple(WSC, chr=5, window=3, method="likelihood", error.prob=0.005)
+summary(rip5lik)
+pat5 <- apply(rip5[,1:17], 1, paste, collapse=":")
+pat5lik <- apply(rip5lik[,1:17], 1, paste, collapse=":")
+rip5 <- rip5[match(pat5lik, pat5),]
+plot(rip5[,"obligXO"], rip5lik[,"LOD"], xlab="obligate crossover count chr=5",
+                 ylab="LOD score") #shows that as the number of crossovers increases the LOD score decreases.
+WSC <- orderMarkers(WSC, chr=4)
+pull.map(WSC, chr=4)
+rip4 <- ripple(WSC, chr=4, window=7)
+summary(rip4)
+rip4lik <- ripple(WSC, chr=4, window=3, method="likelihood", error.prob=0.005)
+summary(rip4lik)
+WSC <- switch.order(WSC, chr=4, c(1:17, 19,20,18, 21:25), error.prob=0.005)
+pull.map(WSC, chr=4)
+WSC <- orderMarkers(WSC, chr=3)
+pull.map(WSC, chr=3)
+rip3 <- ripple(WSC, chr=3, window=7)
+summary(rip3)
+rip3lik <- ripple(WSC, chr=3, window=3, method="likelihood", error.prob=0.005)
+summary(rip3lik)
+WSC <- switch.order(WSC, chr=3, c(1:17, 19,18,20, 21:25), error.prob=0.005)
+pull.map(WSC, chr=3)
+WSC <- orderMarkers(WSC, chr=2)
+pull.map(WSC, chr=2)
+rip2 <- ripple(WSC, chr=2, window=7)
+summary(rip2)
+rip2lik <- ripple(WSC, chr=2, window=3, method="likelihood", error.prob=0.005)
+summary(rip2lik)
+WSC <- orderMarkers(WSC, chr=1)
+pull.map(WSC, chr=1)
+rip1 <- ripple(WSC, chr=1, window=7)
+summary(rip1)
+rip1lik <- ripple(WSC, chr=1, window=3, method="likelihood", error.prob=0.005)
+summary(rip1lik) 
+#possibly switch order
+#WSC <- switch.order(WSC, chr=1, c(1:28, 30,29, 31:34), error.prob=0.005)
+#pull.map(WSC, chr=1)
+summaryMap(WSC)
+plotMap(WSC, show.marker.names=TRUE)
+plotRF(WSC)
+pull.map(WSC)
+#end of tutorial
+
+
+messedup <- switch.order(WSC, chr=3, c(1:7,15:25,8:14),
+                          error.prob=0.005)
+plotRF(messedup, chr=3)
+plotMap(messedup, show.marker.names=TRUE)
+dropone <- droponemarker(WSC, error.prob=0.005)
+par(mfrow=c(2,1))
+plot(dropone, lod=1, ylim=c(-100,0))
+plot(dropone, lod=2, ylab="Change in chromosome length")
+summary(dropone, lod.column=2)
+badmar <- rownames(summary(dropone, lod.column=2))[1:5]
+WSC <- drop.markers(WSC, badmar)
+newmap <- est.map(WSC, error.prob=0.005)
+WSC <- replace.map(WSC, newmap)
+summaryMap(WSC)
+plot(countXO(WSC), ylab="Number of crossovers")
+WSC <- subset(WSC, ind=(countXO(WSC) < 50))
+summary(rip <- ripple(WSC, chr=3, window=7))
+summary(rip <- ripple(WSC, chr=3, window=2, method="likelihood",
+                       error.prob=0.005))
+WSC <- switch.order(WSC, chr=3, c(1:24), error.prob=0.005)
+pull.map(WSC, chr=3)
+newmap <- est.map(WSC, error.prob=0.005)
+WSC <- replace.map(WSC, newmap)
+summaryMap(WSC)
+loglik <- err <- c(0.001, 0.0025, 0.005, 0.0075, 0.01, 0.0125, 0.015, 0.0175, 0.02)
+for(i in seq(along=err)) {
+   cat(i, "of", length(err), "\n")
+   tempmap <- est.map(WSC, error.prob=err[i])
+   loglik[i] <- sum(sapply(tempmap, attr, "loglik"))
+   }
+lod <- (loglik - max(loglik))/log(10)
+plot(err, lod, xlab="Genotyping error rate", xlim=c(0,0.02),
+      ylab=expression(paste(log[10], " likelihood")))
+WSC <- calc.errorlod(WSC, error.prob=0.005)
+print(toperr <- top.errorlod(WSC, cutoff=6))
+plotGeno(WSC, chr=1, ind=toperr$id[toperr$chr==1],
+          cutoff=6, include.xo=FALSE) #repeat for each chromosome
+WSC.clean <- WSC
+for(i in 1:nrow(toperr)) {
+   chr <- toperr$chr[i]
+   id <- toperr$id[i]
+   mar <- toperr$marker[i]
+   WSC.clean$geno[[chr]]$data[WSC$pheno$id==id, mar] <- NA
+   }
+gt <- geno.table(WSC, scanone.output=TRUE)
+par(mfrow=c(1,1))
+plot(gt, ylab=expression(paste(-log[10], " P-value")))
+plot(gt, lod=3:5, ylab="Genotype frequency")
+abline(h=c(0.25, 0.5), lty=2, col="gray")
+plotMap(WSC, show.marker.names=TRUE)
