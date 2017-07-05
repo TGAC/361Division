@@ -1,0 +1,7 @@
+sample	class
+case1	1
+case2	1
+case3	1
+control1	0
+control2	0
+control3	0

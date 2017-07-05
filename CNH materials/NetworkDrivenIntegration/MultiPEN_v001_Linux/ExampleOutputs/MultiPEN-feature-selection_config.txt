@@ -1,0 +1,2 @@
+lambda	numIter	decisionThreshold
+0.0001	100	0.5

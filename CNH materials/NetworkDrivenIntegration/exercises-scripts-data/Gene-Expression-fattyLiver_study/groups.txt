@@ -1,0 +1,17 @@
+groups
+low
+low
+high
+high
+high
+high
+low
+low
+high
+high
+high
+high
+none
+none
+high
+high
